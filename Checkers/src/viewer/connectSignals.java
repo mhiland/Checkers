@@ -101,6 +101,7 @@ public class connectSignals extends GameArea {
 			public void onActivate(MenuItem arg0) {
 				System.out.println("restart");
 				start = true;
+				endOfGame = false;
 				statusbar.setMessage("Ready");
 				rTokens.clear();
 				bTokens.clear();
