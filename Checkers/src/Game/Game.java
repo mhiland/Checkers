@@ -30,11 +30,13 @@ public class Game {
 	private static Game game;
 	protected static List<Tokens> rTokens;
 	protected static List<Tokens> bTokens;
+	protected static boolean endOfGame;
 //	protected int[] rStart = new int[]{1,3,5,7,8,10,12,14,17,19,21,23};
 //	protected int[] bStart = new int[]{40,42,44,46,49,51,53,55,56,58,60,62};
-	protected int[] rStart = new int[]{1,3,5,7,8,10,12,14,17,19,23,49,33};//testing
-	protected int[] bStart = new int[]{28,40,42,44,46,53,56,58,60,62};//testing
-
+//	protected int[] rStart = new int[]{1,3,5,7,8,10,12,14,17,19,23,49,33};//testing
+//	protected int[] bStart = new int[]{28,40,42,44,46,53,56,58,60,62};//testing
+	protected int[] rStart = new int[]{1,3,5,7,8,10,12,14,17,19,23,49};//testing
+	protected int[] bStart = new int[]{33,56};//testing
 	/**
 	 * Explicit Constructor 
 	 */
@@ -45,6 +47,7 @@ public class Game {
 	 * @param title Application Title
 	 */
 	public Game(String title) {
+		endOfGame = false;
 		myGame = this;
 		Viewer viewer = new Viewer(title); 
 		setCanvas(viewer.getArea());

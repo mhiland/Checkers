@@ -19,7 +19,7 @@ import org.gnome.gtk.ImageMenuItem;
 import org.gnome.gtk.MenuItem;
 import org.gnome.pango.FontDescription;
 
-import Game.AI;
+import AI.AI;
 import Game.GameArea;
 import Game.GameControl;
 
@@ -70,7 +70,7 @@ public class connectSignals extends GameArea {
 	private EnterNotifyEvent StatusBarInitial(final Statusbar statusbar) {
 		window.connect(new Widget.MotionNotifyEvent() {
 			public boolean onMotionNotifyEvent(Widget source, EventMotion event) {
-				if (start)
+				if (start && !endOfGame)
 				statusbar.setMessage("Player One's Move");
 				start = false;
 				return false;
@@ -132,7 +132,6 @@ public class connectSignals extends GameArea {
 			public boolean onButtonReleaseEvent(Widget source, EventButton event) {
 				buttonPressed = false;
 				game.deSelectToken(event.getX(), event.getY());
-				game.callAI();
 				return false;
 			}
 		}); 
