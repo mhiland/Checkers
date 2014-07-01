@@ -19,11 +19,11 @@ public class GameControl extends Game {
 		if (playersTurn){
 			tmp.setPosition(x, y+yoffset);
 			if(multiJump == null || tmp.getPos() == multiJump.getPos())
-			for (Tokens i : rTokens)
-				if (i.getPos() == tmp.getPos()){
-					target = i;
-					return;
-				}
+				for (Tokens i : rTokens)
+					if (i.getPos() == tmp.getPos()){
+						target = i;
+						return;
+					}
 		} 
 		return;
 	}
@@ -40,38 +40,37 @@ public class GameControl extends Game {
 			int val = target.checkPos(x, y+yoffset);
 			//if target is a valid tile and has a valid move
 			if (val !=-1 && isOpen(target, val) ){
-				if(hasJump(tmp.getPos())){ 	// make jump if valid
+				if(hasJump(tmp.getPos())){ 	
+					// make jump if valid
 					makeJump(val);
 				}else if (!hasJump(tmp.getPos()) && hasMove(val)){
-					target.setPos(val);		//else make move
+					//else make move
+					target.setPos(val);		
 				}else target.setPos(tmp.getPos());
 			}
-			else	
-				target.setPos(tmp.getPos()); //else no move was made, reset to initial position
+			else{	
+				//else no move was made, reset to initial position
+				target.setPos(tmp.getPos()); 
+			}
 			game.reDrawGame();
 		}
 		target = null;
-		
-		if (playersTurn){
-			canvas.setTooltipText("Player One's Move");
-			connectSignals.statusbar.setMessage("Player One's Move");
-		}else{
-			canvas.setTooltipText("AI's Move");
-			connectSignals.statusbar.setMessage("AI's Move");
-			multiJump = null;
-			callAI();
-		}
-		
+		if(!endOfGame)
+			if (playersTurn){
+				canvas.setTooltipText("Player One's Move");
+				connectSignals.statusbar.setMessage("Player One's Move");
+			}else{
+				canvas.setTooltipText("AI's Move");
+				connectSignals.statusbar.setMessage("AI's Move");
+				multiJump = null;
+				callAI();
+			}
+
 		return;
 	}
 
 	public void callAI(){
 		ai.move();
-		if (endOfGame){
-			canvas.setTooltipText("Game Over");
-			connectSignals.statusbar.setMessage("Game Over");
-			playersTurn = false;
-		}
 		return;
 	}
 

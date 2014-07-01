@@ -26,43 +26,37 @@ public class AI extends GameControl{
 	}
 
 
+	/**
+	 * Make the AI take its next move
+	 * pause for 2s to simulate thinking
+	 */
 	public void move() {
-		delay(false);
+		hh.schedule(new TimerTask() {          
+			@Override
+			public void run() {
+				// 2s delay
+				findAMove();
+				if(!endOfGame){
+					playersTurn = true;
+					canvas.setTooltipText("Player One's Move");
+					connectSignals.statusbar.setMessage("Player One's Move");
+				}
+			}
+		}, 2000);
 	}
 
-	//this code works but not currently implemented untill bugs worked out
-	private void delay(boolean pause){
-		if(pause){
-			//Take a Pause
-			hh.schedule(new TimerTask() {          
-				@Override
-				public void run() {
-					// 2s delay
-					aiMain();
-				}
-			}, 2000);
-		}else{
-			aiMain();
-		}
-	}
-	
-	public void aiMain(){
-		playersTurn = true;
-		canvas.setTooltipText("Player One's Move");
-		connectSignals.statusbar.setMessage("Player One's Move");
-		findAMove();
-		return;
-	}
 
 	/**
-	 * Function to move a black token from one pos to another
+	 * Function to move/animate token
 	 * @param startPos
 	 * @param finalPos
 	 */
 	public void move(int startPos, int finalPos){
 		for (Tokens j : bTokens){
 			if (j.getPos() == startPos){
-				j.setPos(finalPos);
+				//TODO
+				//get eqn of straight line between start and end position
+				//increment curson along line
 				game.reDrawGame();
 			}
 			return;
@@ -76,12 +70,14 @@ public class AI extends GameControl{
 	public void findAMove(){
 		movePriorityQueue.clear();
 		jumpPriorityQueue.clear();
-
+		
+		//find best jump/moves and add to priority queue
 		for (Tokens j : bTokens){
 			hasJump(j);
 			hasMove(j);
 		}
 
+		//Get the best jump from the queue
 		Jump bestJump;
 		bestJump = jumpPriorityQueue.poll();
 		if(bestJump != null){
@@ -93,7 +89,7 @@ public class AI extends GameControl{
 				}
 			}
 		}
-
+		//Get the best move from the queue
 		Move bestMove;
 		bestMove = movePriorityQueue.poll();
 		if(bestMove != null){
@@ -107,6 +103,9 @@ public class AI extends GameControl{
 		}
 		System.out.println("end of game");
 		endOfGame = true;
+		canvas.setTooltipText("Game Over");
+		connectSignals.statusbar.setMessage("Game Over");
+		playersTurn = false;
 		return ;
 	}
 
