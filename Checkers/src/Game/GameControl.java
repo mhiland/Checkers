@@ -3,6 +3,8 @@ package Game;
 
 import viewer.connectSignals;
 import AI.AI;
+import Visuals.BlackToken;
+import Visuals.RedToken;
 import Visuals.Tokens;
 
 
@@ -12,7 +14,7 @@ public class GameControl extends Game {
 	private Tokens target = null;
 	private static Tokens multiJump = null;
 	protected Game game = Game.getGame();
-	protected static boolean playersTurn = true;
+	public static boolean playersTurn = false;
 	private static AI ai = new AI();
 
 	public void selectToken(double x, double y) {
@@ -45,7 +47,8 @@ public class GameControl extends Game {
 					makeJump(val);
 				}else if (!hasJump(tmp.getPos()) && hasMove(val)){
 					//else make move
-					target.setPos(val);		
+					target.setPos(val);	
+					isCrowned(target);
 				}else target.setPos(tmp.getPos());
 			}
 			else{	
@@ -69,7 +72,7 @@ public class GameControl extends Game {
 		return;
 	}
 
-	public void callAI(){
+	public static void callAI(){
 		ai.move();
 		return;
 	}
@@ -146,6 +149,7 @@ public class GameControl extends Game {
 			if (j.getPos() == tmp.getPos()+ 7 && (j.getPos() == newPosition -7)){
 				bTokens.remove(j);
 				target.setPos(newPosition);
+				isCrowned(target);
 				playersTurn = hasJump(newPosition);
 				if (hasJump(newPosition)){
 					multiJump = target;
@@ -156,6 +160,7 @@ public class GameControl extends Game {
 			else if (target.isKing() && j.getPos() == tmp.getPos()- 7 && (j.getPos() == newPosition +7)){
 				bTokens.remove(j);
 				target.setPos(newPosition);
+				isCrowned(target);
 				playersTurn = hasJump(newPosition);
 				if (hasJump(newPosition)){
 					multiJump = target;
@@ -166,6 +171,7 @@ public class GameControl extends Game {
 			else if (j.getPos() == tmp.getPos()+ 9 && j.getPos() == newPosition - 9){
 				bTokens.remove(j);
 				target.setPos(newPosition);
+				isCrowned(target);
 				playersTurn = hasJump(newPosition);
 				if (hasJump(newPosition)){
 					multiJump = target;
@@ -175,6 +181,7 @@ public class GameControl extends Game {
 			}else if (target.isKing() && j.getPos() == tmp.getPos()- 9 && j.getPos() == newPosition + 9){
 				bTokens.remove(j);
 				target.setPos(newPosition);
+				isCrowned(target);
 				playersTurn = hasJump(newPosition);
 				if (hasJump(newPosition)){
 					multiJump = target;
@@ -184,6 +191,26 @@ public class GameControl extends Game {
 			}
 		}
 		target.setPos(tmp.getPos());
+		isCrowned(target);
+		return false;
+	}
+	
+	public boolean isCrowned(Tokens token){
+		if (token.getClass() == RedToken.class){
+			for (int i: rCrown){
+				if (token.getPos() == i){
+					token.setKing();
+					return true;
+				}
+			}
+		}else if (token.getClass() == BlackToken.class){
+			for (int i: bCrown){
+				if (token.getPos() == i){
+					token.setKing();
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 

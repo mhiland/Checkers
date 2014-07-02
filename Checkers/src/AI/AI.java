@@ -46,22 +46,6 @@ public class AI extends GameControl{
 	}
 
 
-	/**
-	 * Function to move/animate token
-	 * @param startPos
-	 * @param finalPos
-	 */
-	public void move(int startPos, int finalPos){
-		for (Tokens j : bTokens){
-			if (j.getPos() == startPos){
-				//TODO
-				//get eqn of straight line between start and end position
-				//increment curson along line
-				game.reDrawGame();
-			}
-			return;
-		}
-	}
 
 	/**
 	 * Make the Best Jump or Move.
@@ -70,7 +54,7 @@ public class AI extends GameControl{
 	public void findAMove(){
 		movePriorityQueue.clear();
 		jumpPriorityQueue.clear();
-		
+
 		//find best jump/moves and add to priority queue
 		for (Tokens j : bTokens){
 			hasJump(j);
@@ -83,7 +67,7 @@ public class AI extends GameControl{
 		if(bestJump != null){
 			for (Tokens k : bTokens){
 				if (k.getPos() == bestJump.getA()){
-					makeJump(k,bestJump.getPath());
+					makeJump(k,bestJump);
 					game.reDrawGame();
 					return;
 				}
@@ -96,6 +80,7 @@ public class AI extends GameControl{
 			for (Tokens k : bTokens){
 				if (k.getPos() == bestMove.getA()){
 					k.setPos(bestMove.getB());
+					isCrowned(k);
 					game.reDrawGame();
 					return;
 				}
@@ -109,9 +94,40 @@ public class AI extends GameControl{
 		return ;
 	}
 
-	private void makeJump(Tokens k, Object path) {
-		// TODO Auto-generated method stub
+	/**
+	 * Function to move/animate token
+	 * @param startPos
+	 * @param finalPos
+	 */
+	public void makeMove(int startPos, int finalPos){
+		for (Tokens j : bTokens){
+			if (j.getPos() == startPos){
+				//TODO
+				//get eqn of straight line between start and end position
+				//increment curson along line
+				game.reDrawGame();
+			}
+			return;
+		}
+	}
 
+	/**
+	 * Execute the AI jump
+	 * animated
+	 * @param k
+	 * @param path
+	 */
+	private void makeJump(Tokens k, Jump jump) {
+		// TODO Auto-generated method stub
+		for (Tokens j : rTokens){
+			if(j.getPos() == jump.getSkip()){
+				rTokens.remove(j);
+				k.setPos(jump.getB());
+				isCrowned(k);
+				return;
+			}
+		}
+		
 	}
 
 
@@ -156,6 +172,45 @@ public class AI extends GameControl{
 		return movable;
 	}
 
+	/**
+	 * Determines All Possible jumps for a token and adds to a priority queue
+	 * @param aiToken
+	 * @return
+	 */
+	private boolean hasJump(Tokens aiToken){
+		int currentPosition = aiToken.getPos();
+		boolean jumpable = false;
+		for (Tokens j : rTokens){
+			if((j.getPos() == currentPosition-7)&&(isOpen(aiToken,currentPosition-14))){
+				int rank = getJumpRank(aiToken, currentPosition, currentPosition-14);
+				jumpPriorityQueue.add(new Jump(aiToken, rank, currentPosition, currentPosition-7, currentPosition-14));
+				jumpable = true;
+			}
+			if((j.getPos() == currentPosition-9)&&(isOpen(aiToken,currentPosition-18))){
+				int rank = getJumpRank(aiToken, currentPosition, currentPosition-18);
+				jumpPriorityQueue.add(new Jump(aiToken, rank, currentPosition, currentPosition-9, currentPosition-18));
+				jumpable = true;
+			}
+			if((aiToken.isKing())&&(j.getPos() == currentPosition+7)&&(isOpen(aiToken,currentPosition+14))){
+				int rank = getJumpRank(aiToken, currentPosition, currentPosition+14);
+				jumpPriorityQueue.add(new Jump(aiToken, rank, currentPosition, currentPosition+7, currentPosition+14));
+				jumpable = true;
+			}
+			if((aiToken.isKing())&&(j.getPos() == currentPosition+9)&&(isOpen(aiToken,currentPosition+18))){
+				int rank = getJumpRank(aiToken, currentPosition, currentPosition-18);
+				jumpPriorityQueue.add(new Jump(aiToken, rank, currentPosition, currentPosition+9, currentPosition+18));
+				jumpable = true;
+			}
+
+		}
+		return jumpable;
+	}
+
+	public int getJumpRank(Tokens token, int iPos, int fPos){
+		//TODO rank against single / double / triple jumps / captures/ crowning
+		return 0;
+	}
+
 	public int getMoveRank(Tokens token, int iPos, int fPos){
 		//TODO rank against pitch/ giveaways / captures /crowning
 		return 0;
@@ -177,8 +232,4 @@ public class AI extends GameControl{
 		}
 	};	
 
-	private boolean hasJump(Tokens aiToken){
-		//TODO rank against single / double / triple jumps / captures/ crowning
-		return false;
-	}
 }

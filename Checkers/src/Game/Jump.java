@@ -14,14 +14,16 @@ public class Jump {
 	int priority;
 	int positionA;
 	int positionB;
+	int skip;
 	long timeStamp;
 
-	public Jump(Tokens token, int priority, int positionA, int positionB){
+	public Jump(Tokens token, int priority, int positionA, int skip,  int positionB){
 		Date date= new java.util.Date();
 		this.token = token;
 		this.priority= priority;
 		this.positionA = positionA;
 		this.positionB = positionB;
+		this.skip = skip;
 		timeStamp = date.getTime();
 	}
 	
@@ -39,6 +41,10 @@ public class Jump {
 	
 	public int getB(){
 		return positionB;
+	}
+	
+	public int getSkip(){
+		return skip;
 	}
 	
 	public long getTimeStamp(){

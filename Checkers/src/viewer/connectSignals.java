@@ -71,7 +71,14 @@ public class connectSignals extends GameArea {
 		window.connect(new Widget.MotionNotifyEvent() {
 			public boolean onMotionNotifyEvent(Widget source, EventMotion event) {
 				if (start && !endOfGame)
-				statusbar.setMessage("Player One's Move");
+					if (GameControl.playersTurn){
+						statusbar.setMessage("Player One Moves First");
+						canvas.setTooltipText("Player Ones Move");
+					}else{
+						statusbar.setMessage("AI Moves First");
+						canvas.setTooltipText("AI Moves Move");
+						GameControl.callAI();
+					}
 				start = false;
 				return false;
 			}
@@ -82,15 +89,11 @@ public class connectSignals extends GameArea {
 
 
 	private void StatusBar( Statusbar statusbar) {
-	
 		FontDescription desc = new FontDescription("DejaVu Serif, Book 11");
 		statusbar.overrideFont(desc);
 		statusbar.overrideBackground(StateFlags.NORMAL,  RGBA.WHITE);
 		statusbar.overrideColor(StateFlags.NORMAL, RGBA.BLACK);
-		
 		statusbar.setMessage("Ready");
-
-	
 		return ;
 	}
 

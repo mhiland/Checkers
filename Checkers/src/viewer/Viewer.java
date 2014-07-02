@@ -46,9 +46,7 @@ public class Viewer{
 		this.builder = new Builder();
 		getGladeSetup();
 		getIconSetup();
-		area = (DrawingArea) builder.getObject("drawingArea");
-		area.setTooltipText("Gnome Checkers");
-		
+		area = (DrawingArea) builder.getObject("drawingArea");	
 	}
 
 	
