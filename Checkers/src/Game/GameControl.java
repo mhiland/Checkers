@@ -14,7 +14,7 @@ public class GameControl extends Game {
 	private Tokens target = null;
 	private static Tokens multiJump = null;
 	protected Game game = Game.getGame();
-	public static boolean playersTurn = false;
+	public static boolean playersTurn = true;
 	private static AI ai = new AI();
 
 	public void selectToken(double x, double y) {
@@ -60,11 +60,11 @@ public class GameControl extends Game {
 		target = null;
 		if(!endOfGame)
 			if (playersTurn){
-				canvas.setTooltipText("Player One's Move");
-				connectSignals.statusbar.setMessage("Player One's Move");
+				canvas.setTooltipText("Player Ones Move");
+				connectSignals.statusbar.setMessage("Player Ones Move");
 			}else{
-				canvas.setTooltipText("AI's Move");
-				connectSignals.statusbar.setMessage("AI's Move");
+				canvas.setTooltipText("AIs Move");
+				connectSignals.statusbar.setMessage("AIs Move");
 				multiJump = null;
 				callAI();
 			}
@@ -109,7 +109,6 @@ public class GameControl extends Game {
 		for (Tokens j : rTokens){
 			if (hasJump(j.getPos()) && j.getPos() != target.getPos()){
 				target.setPos(tmp.getPos());
-				System.out.println("must jump"+j.getPos());
 				return false;
 			}	
 		}
@@ -129,12 +128,10 @@ public class GameControl extends Game {
 		for (Tokens j : bTokens){
 			if ((j.getPos() == (position+ 7 ))&& isOpen(target, position+14) ||
 					(target.isKing() && (j.getPos() == position- 7 && isOpen(target,position-14)))){
-				System.out.println("has 7 at "+j.getPos());
 				return true;
 			}
 			if ((j.getPos() ==( position+ 9)) && isOpen(target, position+18)||
 					(target.isKing() && (j.getPos() == position- 9 && isOpen(target,position-18)))){
-				System.out.println("has 9 at "+j.getPos());
 				return true;
 			}
 		}
@@ -195,6 +192,12 @@ public class GameControl extends Game {
 		return false;
 	}
 	
+	/**
+	 * Determine if token should be king,
+	 * by checking if landed on a crowning-row.
+	 * @param token
+	 * @return true if token is now a king
+	 */
 	public boolean isCrowned(Tokens token){
 		if (token.getClass() == RedToken.class){
 			for (int i: rCrown){

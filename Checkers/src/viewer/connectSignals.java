@@ -72,11 +72,11 @@ public class connectSignals extends GameArea {
 			public boolean onMotionNotifyEvent(Widget source, EventMotion event) {
 				if (start && !endOfGame)
 					if (GameControl.playersTurn){
-						statusbar.setMessage("Player One Moves First");
+						statusbar.setMessage("Player Ones move");
 						canvas.setTooltipText("Player Ones Move");
 					}else{
-						statusbar.setMessage("AI Moves First");
-						canvas.setTooltipText("AI Moves Move");
+						statusbar.setMessage("AIs Move");
+						canvas.setTooltipText("AIs Move");
 						GameControl.callAI();
 					}
 				start = false;
@@ -125,7 +125,7 @@ public class connectSignals extends GameArea {
 		window.connect(new Widget.ButtonPressEvent() {
 			public boolean onButtonPressEvent(Widget source, EventButton event) {
 				//System.out.println("mouse button Down");
-				System.out.println(Math.floor((event.getX()/width)*8 + Math.floor(((event.getY()-30)/(height))*(8))*8));
+				//System.out.println(Math.floor((event.getX()/width)*8 + Math.floor(((event.getY()-30)/(height))*(8))*8));
 				buttonPressed = true;
 				game.selectToken(event.getX(), event.getY());
 				return false;

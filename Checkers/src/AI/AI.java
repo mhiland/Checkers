@@ -19,10 +19,12 @@ public class AI extends GameControl{
 	public static Timer hh = new Timer();
 	private Queue<Move> movePriorityQueue;
 	private Queue<Jump> jumpPriorityQueue;
+	private PriorityMove pMove;
 
 	public AI(){
 		movePriorityQueue = new PriorityQueue<Move>(12, moveComparator);
 		jumpPriorityQueue = new PriorityQueue<Jump>(12, jumpComparator);
+		pMove = new PriorityMove();
 	}
 
 
@@ -36,10 +38,15 @@ public class AI extends GameControl{
 			public void run() {
 				// 2s delay
 				findAMove();
+				game.reDrawGame();
 				if(!endOfGame){
 					playersTurn = true;
-					canvas.setTooltipText("Player One's Move");
-					connectSignals.statusbar.setMessage("Player One's Move");
+					canvas.setTooltipText("Player Ones Move");
+					connectSignals.statusbar.setMessage("Player Ones Move");
+				}else{
+					canvas.setTooltipText("Game Over");
+					connectSignals.statusbar.setMessage("Game Over");
+					playersTurn = false;
 				}
 			}
 		}, 2000);
@@ -60,7 +67,6 @@ public class AI extends GameControl{
 			hasJump(j);
 			hasMove(j);
 		}
-
 		//Get the best jump from the queue
 		Jump bestJump;
 		bestJump = jumpPriorityQueue.poll();
@@ -68,7 +74,6 @@ public class AI extends GameControl{
 			for (Tokens k : bTokens){
 				if (k.getPos() == bestJump.getA()){
 					makeJump(k,bestJump);
-					game.reDrawGame();
 					return;
 				}
 			}
@@ -81,35 +86,15 @@ public class AI extends GameControl{
 				if (k.getPos() == bestMove.getA()){
 					k.setPos(bestMove.getB());
 					isCrowned(k);
-					game.reDrawGame();
 					return;
 				}
 			}
 		}
-		System.out.println("end of game");
+		//If no moves or jumps to be made, ai loses.
 		endOfGame = true;
-		canvas.setTooltipText("Game Over");
-		connectSignals.statusbar.setMessage("Game Over");
-		playersTurn = false;
 		return ;
 	}
 
-	/**
-	 * Function to move/animate token
-	 * @param startPos
-	 * @param finalPos
-	 */
-	public void makeMove(int startPos, int finalPos){
-		for (Tokens j : bTokens){
-			if (j.getPos() == startPos){
-				//TODO
-				//get eqn of straight line between start and end position
-				//increment curson along line
-				game.reDrawGame();
-			}
-			return;
-		}
-	}
 
 	/**
 	 * Execute the AI jump
@@ -118,16 +103,17 @@ public class AI extends GameControl{
 	 * @param path
 	 */
 	private void makeJump(Tokens k, Jump jump) {
-		// TODO Auto-generated method stub
 		for (Tokens j : rTokens){
 			if(j.getPos() == jump.getSkip()){
 				rTokens.remove(j);
 				k.setPos(jump.getB());
 				isCrowned(k);
+				jumpPriorityQueue.clear();
+				if(hasJump(k))
+					makeJump(k, jumpPriorityQueue.poll());
 				return;
 			}
 		}
-		
 	}
 
 
@@ -201,7 +187,6 @@ public class AI extends GameControl{
 				jumpPriorityQueue.add(new Jump(aiToken, rank, currentPosition, currentPosition+9, currentPosition+18));
 				jumpable = true;
 			}
-
 		}
 		return jumpable;
 	}
@@ -213,14 +198,14 @@ public class AI extends GameControl{
 
 	public int getMoveRank(Tokens token, int iPos, int fPos){
 		//TODO rank against pitch/ giveaways / captures /crowning
-		return 0;
+		return pMove.getPriority(token, iPos, fPos);
 	}
 
 	//Comparator class implementation for Move
 	public static Comparator<Move> moveComparator = new Comparator<Move>(){
 
 		public int compare(Move m1, Move m2) {
-			return (int) (m1.getPriority() - m2.getPriority());
+			return (int) (m2.getPriority() - m1.getPriority());
 		}
 	};
 

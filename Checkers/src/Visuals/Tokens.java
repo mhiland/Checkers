@@ -13,7 +13,9 @@ public interface Tokens {
 	public void draw();
 	public int checkPos(double x, double y);
 	public boolean checkPos(int i);
+	public double getX();
+	public double getY();
 
-	
+	public Tokens token(int i);
 }
 

@@ -6,16 +6,8 @@ public class Position extends GameArea {
 	int pos;
 	double x; 
 	double y;
-	float size= 8;
-	private int[] validPositions = new int[]
-			{1,3,5,7,
-			8,10,12,14,
-			17,19,21,23,
-			24,26,28,30,
-			33,35,37,39,
-			40,42,44,46,
-			49,51,53,55,
-			56,58,60,62};
+	static float size= 8;
+	
 
 
 	public Position(int i){
@@ -63,14 +55,14 @@ public class Position extends GameArea {
 		return false;
 
 	}
-	private double xpos(int i){
+	public static double xpos(int i){
 		double skip = width/size;
 		if (i ==0)
 			return width/size/2;
 		return  skip += xpos(--i);
 	}
 
-	private double ypos(int i){
+	public static double ypos(int i){
 		double skip = height/size;
 		if (i ==0)
 			return height/size/2;
@@ -93,15 +85,6 @@ public class Position extends GameArea {
 		return height/size/2;
 	}
 
-	public boolean isValid(int val){
-		for (int i : validPositions){
-			if (i == val){
-				return true;
-			}
-		}
-		return false;
-
-	}
 	public int checkPos(double x, double y) {
 		// -1 for false, val for true
 		if (x<0 || x>width)  return -1;
@@ -114,6 +97,26 @@ public class Position extends GameArea {
 	
 	public boolean checkPos(int val) {
 		return isValid(val);
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + pos;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Position other = (Position) obj;
+		if (pos != other.pos)
+			return false;
+		return true;
 	}
 	
 }
