@@ -3,6 +3,7 @@ package AI;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -82,6 +83,15 @@ public class AI extends GameControl{
 		Move bestMove;
 		bestMove = movePriorityQueue.poll();
 		if(bestMove != null){
+			//for all equal priority moves, randomly select or reject current move for the next
+			for (Move m : movePriorityQueue){
+				if( bestMove.getPriority()== m.getPriority()){
+					int rn = new Random().nextInt(4);
+					if (rn == 1){
+						bestMove = m ;
+					}
+				}
+			}
 			for (Tokens k : bTokens){
 				if (k.getPos() == bestMove.getA()){
 					k.setPos(bestMove.getB());
@@ -154,6 +164,7 @@ public class AI extends GameControl{
 			movePriorityQueue.add(new Move(aiToken, rank, currentPosition, currentPosition+9));
 			movable = true;
 		} 
+			
 		//else token has no move
 		return movable;
 	}

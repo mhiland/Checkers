@@ -14,7 +14,8 @@ public class GameControl extends Game {
 	private Tokens target = null;
 	private static Tokens multiJump = null;
 	protected Game game = Game.getGame();
-	public static boolean playersTurn = true;
+	public static boolean playersTurn = false;
+	public static boolean aiTurn = true;
 	private static AI ai = new AI();
 
 	public void selectToken(double x, double y) {
@@ -45,11 +46,16 @@ public class GameControl extends Game {
 				if(hasJump(tmp.getPos())){ 	
 					// make jump if valid
 					makeJump(val);
+					aiTurn = true;
 				}else if (!hasJump(tmp.getPos()) && hasMove(val)){
 					//else make move
 					target.setPos(val);	
 					isCrowned(target);
-				}else target.setPos(tmp.getPos());
+					aiTurn = true;
+				}else{
+					// else return token to initial position
+					target.setPos(tmp.getPos());
+				}
 			}
 			else{	
 				//else no move was made, reset to initial position
@@ -73,7 +79,10 @@ public class GameControl extends Game {
 	}
 
 	public static void callAI(){
-		ai.move();
+		if (aiTurn){
+			aiTurn = false;
+			ai.move();
+		}
 		return;
 	}
 
@@ -97,6 +106,8 @@ public class GameControl extends Game {
 		// if no move was made
 		if((token.getClass() == rTokens.getClass())&&(newPosition == tmp.getPos()))
 			return false;
+		if (aiTurn && newPosition == tmp.getPos())
+			return false;
 		return true;
 	}
 
@@ -107,17 +118,21 @@ public class GameControl extends Game {
 	private boolean hasMove(int newPosition) {
 		//check first if another token is in a position to jump
 		for (Tokens j : rTokens){
-			if (hasJump(j.getPos()) && j.getPos() != target.getPos()){
+			if (hasJump(j) && j.getPos() != target.getPos()){
 				target.setPos(tmp.getPos());
+				System.out.println("has jump"+j.getPos());
 				return false;
 			}	
 		}
-		if(tmp.getPos()+ 7 == newPosition || tmp.getPos()+ 9 == newPosition || 
-				(target.isKing() && (tmp.getPos()- 7 == newPosition || tmp.getPos()- 9 == newPosition))){
+		if(tmp.getPos()+ 7 == newPosition || tmp.getPos()+ 9 == newPosition ){ 
 			playersTurn = false;
 			return true;
 		}
-
+		if (target.isKing() && (tmp.getPos()- 7 == newPosition || tmp.getPos()- 9 == newPosition)){
+			playersTurn = false;
+			return true;
+		}
+		System.out.println("no move"+target.getPos());
 		return false;
 	}
 
@@ -126,12 +141,34 @@ public class GameControl extends Game {
 	private boolean hasJump(int position) {
 		//single jump
 		for (Tokens j : bTokens){
-			if ((j.getPos() == (position+ 7 ))&& isOpen(target, position+14) ||
-					(target.isKing() && (j.getPos() == position- 7 && isOpen(target,position-14)))){
+			if ((j.getPos() == (position+ 7 ))&& isOpen(target, position+14))
+				return true;
+			if ((target.isKing()/**&& target.getPos() == position**/) && (j.getPos() == position- 7 && isOpen(target,position-14)))
+				return true;
+			if ((j.getPos() ==( position+ 9)) && isOpen(target, position+18))
+					return true;
+			if ((target.isKing() /**&& target.getPos() == position**/)&& (j.getPos() == position- 9 && isOpen(target,position-18)))
+				return true;
+		}
+		return false;
+	}
+	private boolean hasJump(Tokens redToken) {
+		//single jump
+		for (Tokens blackToken : bTokens){
+			if ((blackToken.getPos() == (redToken.getPos()+ 7 ))&& isOpen(target, redToken.getPos()+14)){
+				System.out.println("a");
 				return true;
 			}
-			if ((j.getPos() ==( position+ 9)) && isOpen(target, position+18)||
-					(target.isKing() && (j.getPos() == position- 9 && isOpen(target,position-18)))){
+			if (redToken.isKing() && (blackToken.getPos() == redToken.getPos()- 7 && isOpen(target,redToken.getPos()-14))){
+				System.out.println("b");
+				return true;
+			}
+			if ((blackToken.getPos() == (redToken.getPos()+ 9)) && isOpen(target, redToken.getPos()+18)){
+				System.out.println("c");
+					return true;
+			}
+			if (redToken.isKing()&& (blackToken.getPos() == redToken.getPos()- 9 && isOpen(target,redToken.getPos()-18))){
+				System.out.println("d");
 				return true;
 			}
 		}
@@ -147,30 +184,34 @@ public class GameControl extends Game {
 				bTokens.remove(j);
 				target.setPos(newPosition);
 				isCrowned(target);
-				playersTurn = hasJump(newPosition);
-				if (hasJump(newPosition)){
+				playersTurn = hasJump(target);
+				if (hasJump(target)){
 					multiJump = target;
 				}else
 					multiJump = null;
 				return true;
 			}
 			else if (target.isKing() && j.getPos() == tmp.getPos()- 7 && (j.getPos() == newPosition +7)){
+				if(j.isKing())
+					bKings--;
 				bTokens.remove(j);
 				target.setPos(newPosition);
 				isCrowned(target);
-				playersTurn = hasJump(newPosition);
-				if (hasJump(newPosition)){
+				playersTurn = hasJump(target);
+				if (hasJump(target)){
 					multiJump = target;
 				}else
 					multiJump = null;
 				return true;
 			}
 			else if (j.getPos() == tmp.getPos()+ 9 && j.getPos() == newPosition - 9){
+				if(j.isKing())
+					bKings--;
 				bTokens.remove(j);
 				target.setPos(newPosition);
 				isCrowned(target);
-				playersTurn = hasJump(newPosition);
-				if (hasJump(newPosition)){
+				playersTurn = hasJump(target);
+				if (hasJump(target)){
 					multiJump = target;
 				}else
 					multiJump = null;
@@ -179,8 +220,8 @@ public class GameControl extends Game {
 				bTokens.remove(j);
 				target.setPos(newPosition);
 				isCrowned(target);
-				playersTurn = hasJump(newPosition);
-				if (hasJump(newPosition)){
+				playersTurn = hasJump(target);
+				if (hasJump(target)){
 					multiJump = target;
 				}else
 					multiJump = null;
@@ -210,6 +251,7 @@ public class GameControl extends Game {
 			for (int i: bCrown){
 				if (token.getPos() == i){
 					token.setKing();
+					bKings++;
 					return true;
 				}
 			}

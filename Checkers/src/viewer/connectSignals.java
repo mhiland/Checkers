@@ -105,6 +105,7 @@ public class connectSignals extends GameArea {
 				System.out.println("restart");
 				start = true;
 				endOfGame = false;
+				bKings = 0;
 				statusbar.setMessage("Ready");
 				rTokens.clear();
 				bTokens.clear();

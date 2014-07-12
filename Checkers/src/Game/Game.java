@@ -28,6 +28,7 @@ public class Game {
 	private static Background background;
 	private static Tokens tok;
 	private static Game game;
+	protected static int bKings = 0;
 	protected static List<Tokens> rTokens;
 	protected static List<Tokens> bTokens;
 	protected static boolean endOfGame = false;
@@ -46,8 +47,8 @@ public class Game {
 			56,58,60,62};
 //	protected int[] rStart = new int[]{1,3,5,7,8,10,12,14,17,19,23,49,33};//testing
 //	protected int[] bStart = new int[]{28,40,42,44,46,53,56,58,60,62};//testing
-//	protected int[] rStart = new int[]{1,3,5,7,8,10,12,14,17,19,23,49};//testing
-//	protected int[] bStart = new int[]{33,56};//testing
+//	protected int[] rStart = new int[]{8,14,23,26,53,37};//testing
+//	protected int[] bStart = new int[]{10,12,39};//testing
 	/**
 	 * Explicit Constructor 
 	 */
@@ -178,6 +179,7 @@ public class Game {
 		return result;
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public boolean equals(Object obj) {
 //		if (this == obj)
