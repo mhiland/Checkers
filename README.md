@@ -1,4 +1,4 @@
 Checkers
 ========
 
-Classic checkers board game
+Classic checkers board game for Gnome-Java
