@@ -94,7 +94,9 @@ public class AI extends GameControl{
 			}
 			for (Tokens k : bTokens){
 				if (k.getPos() == bestMove.getA()){
+					int tmp = k.getPos();
 					k.setPos(bestMove.getB());
+					System.out.println("A: "+ tmp + " "+ k.getPos()+ " m");
 					isCrowned(k);
 					return;
 				}
@@ -116,7 +118,9 @@ public class AI extends GameControl{
 		for (Tokens j : rTokens){
 			if(j.getPos() == jump.getSkip()){
 				rTokens.remove(j);
+				int tmp = k.getPos();
 				k.setPos(jump.getB());
+				System.out.println("A: "+ tmp + " "+ k.getPos() + " j");
 				isCrowned(k);
 				jumpPriorityQueue.clear();
 				if(hasJump(k))

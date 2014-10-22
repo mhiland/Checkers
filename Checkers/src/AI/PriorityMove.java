@@ -68,7 +68,7 @@ public class PriorityMove extends Game {
 		priority = (o*offence()+d*defence());
 		if (token.isKing() && (bKings<2))
 			priority-=3;
-		System.out.println("i:"+iPos+" f:"+fPos+" p:"+priority);
+		//System.out.println("i:"+iPos+" f:"+fPos+" p:"+priority);
 		return priority;
 	}
 	
@@ -98,7 +98,7 @@ public class PriorityMove extends Game {
 			if (redToken(iPos-14)&&(blackToken(iPos-7)))
 				defence-=2;
 			
-		    //backup a piece in trouble
+		    //backup a piece in trouble (block single jump)
 			if (redToken(fPos-18)&& blackToken(fPos-9))
 				defence+=2;
 			if (redToken(fPos-14)&& blackToken(fPos-7))

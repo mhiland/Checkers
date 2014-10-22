@@ -46,11 +46,13 @@ public class GameControl extends Game {
 				if(hasJump(tmp.getPos())){ 	
 					// make jump if valid
 					makeJump(val);
+					System.out.println("P: "+ tmp.pos+" "+ target.getPos()+ " j");
 					aiTurn = true;
 				}else if (!hasJump(tmp.getPos()) && hasMove(val)){
 					//else make move
 					target.setPos(val);	
 					isCrowned(target);
+					System.out.println("P: "+ tmp.pos+" "+ target.getPos() + " m");
 					aiTurn = true;
 				}else{
 					// else return token to initial position
@@ -156,19 +158,15 @@ public class GameControl extends Game {
 		//single jump
 		for (Tokens blackToken : bTokens){
 			if ((blackToken.getPos() == (redToken.getPos()+ 7 ))&& isOpen(target, redToken.getPos()+14)){
-				System.out.println("a");
 				return true;
 			}
 			if (redToken.isKing() && (blackToken.getPos() == redToken.getPos()- 7 && isOpen(target,redToken.getPos()-14))){
-				System.out.println("b");
 				return true;
 			}
 			if ((blackToken.getPos() == (redToken.getPos()+ 9)) && isOpen(target, redToken.getPos()+18)){
-				System.out.println("c");
 					return true;
 			}
 			if (redToken.isKing()&& (blackToken.getPos() == redToken.getPos()- 9 && isOpen(target,redToken.getPos()-18))){
-				System.out.println("d");
 				return true;
 			}
 		}
